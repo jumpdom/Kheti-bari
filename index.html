@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>खेती बाड़ी (Kheti Baari) - आधुनिक किसान मंच</title>
+    <style>
+        /* Modern Nature Gradient Palette */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #2e7d32 0%, #1976d2 100%);
+            --secondary-color: #64dd17;
+            --bg-color: #f0f7f4;
+            --text-dark: #1b5e20;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.06), 0 6px 6px rgba(0,0,0,0.04);
+            --border-radius: 12px;
+        }
+
+        body { 
+            font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-color); 
+            color: #333; overflow-x: hidden;
+        }
+
+        header { 
+            background: var(--primary-gradient); 
+            color: white; text-align: center; 
+            padding: 40px 20px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;
+        }
+        header h1 { margin: 0; font-size: 38px; font-weight: 800; letter-spacing: -1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+        header p { margin: 10px 0 0 0; font-size: 20px; opacity: 0.95; font-weight: 400; }
+
+        .container { max-width: 950px; margin: 30px auto; padding: 15px; }
+
+        .card { 
+            background: white; padding: 30px; 
+            border-radius: var(--border-radius); 
+            box-shadow: var(--card-shadow); 
+            margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.7); 
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover { transform: translateY(-3px); }
+        .card h2 { color: var(--text-dark); margin-top: 0; font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+
+        .grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+        @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: 600; color: #555; display: block; margin-bottom: 8px; }
+
+        select, input[type="text"], input[type="tel"] { 
+            width: 100%; padding: 14px; 
+            box-sizing: border-box; 
+            border: 2px solid #e0e0e0; border-radius: var(--border-radius); 
+            font-size: 16px; transition: border-color 0.2s; background: #fafafa;
+        }
+        select:focus, input:focus { border-color: #2e7d32; outline: none; background: white; }
+
+        .btn { 
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; height: 50px;
+            background: var(--primary-gradient); color: white; 
+            text-align: center; text-decoration: none; 
+            border-radius: var(--border-radius); 
+            font-weight: 700; font-size: 17px; cursor: pointer; border: none; 
+            transition: box-shadow 0.2s, opacity 0.2s;
+        }
+        .btn:hover { box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3); opacity: 0.95; }
+        .btn-google { background: linear-gradient(135deg, #df4a32 0%, #b33923 100%); }
+        .btn-blue { background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); }
+        .btn-orange { background: linear-gradient(135deg, #e65100 0%, #ef6c00 100%); }
+        .btn-secondary { background: #f5f5f5; color: #444; width: auto; font-size: 14px; height: 40px; padding: 0 20px; margin-left: 10px; }
+
+        .result-box { 
+            margin-top: 20px; padding: 20px; 
+            background-color: #f0f7f4; border-radius: var(--border-radius); 
+            border: 2px solid #e0eed0; text-align: left; display: none;
+        }
+        .profile-status { color: #2e7d32; font-weight: 600; font-size: 18px; margin-top: 15px; text-align: center;}
+
+        /* Modern Mandi Bhav Data Card */
+        .mandi-record {
+            background: white; border: 1px solid #eee; border-radius: var(--border-radius);
+            padding: 15px; margin-bottom: 12px;
+            display: grid; grid-template-columns: 1fr auto; align-items: center;
+        }
+        .mandi-record-info span { display: block; }
+        .mandi-name { font-weight: 800; color: var(--text-dark); font-size: 18px; }
+        .mandi-crop { color: #666; font-size: 14px; margin-top: 2px; }
+        .mandi-price { 
+            font-weight: 900; color: #2e7d32; font-size: 24px; text-align: right; 
+            display: flex; flex-direction: column; align-items: flex-end;
+        }
+        .mandi-price-label { font-size: 12px; color: #888; font-weight: 400; }
+
+    </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Segoe+UI&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>खेती बाड़ी (Kheti Baari)</h1>
+        <p>आधुनिक किसान मंच — मंडी भाव • मौसम • लेबर</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card" id="login-card" style="text-align: center; display: grid; place-items: center;">
+            <h2 style="justify-content: center; width: 100%;">🔐 लॉगिन करें (Login)</h2>
+            <p style="color: #666; font-size: 16px; max-width: 500px;">'खेती बाड़ी' मंच की उन्नत सेवाओं का उपयोग करने के लिए सुरक्षित Google अकाउंट से लॉगिन करें:</p>
+            <button class="btn btn-google" style="margin-top: 15px; width: 300px; height: 55px;" onclick="loginWithGoogle()">
+                🔴 Login with Google
+            </button>
+        </div>
+
+        <div class="card" id="profile-card" style="display: none; background: #e8f5e9;">
+            <h2 style="color: #1b5e20;">👋 नमस्ते, <span id="user-name-display" style="font-weight: 800;">Kisan</span>!</h2>
+            <p class="profile-status" style="margin: 0; text-align: left;">आधुनिक खेती मंच से आपका संबंध सुरक्षित है।</p>
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>🌾 लाइव मंडी भाव (Real-Time Rates)</h2>
+                <p style="color: #666;">सरकारी सर्वर (Data.gov.in) से सीधे मंडी के ताज़ा भाव देखें:</p>
+                
+                <div class="grid" style="grid-template-columns: 1fr; gap: 15px; @media(min-width:768px){grid-template-columns: 2fr 2fr auto;}">
+                    <div class="form-group">
+                        <label>राज्य चुनें</label>
+                        <input type="text" id="mandi-state" placeholder="State (e.g., Karnataka)">
+                    </div>
+                    <div class="form-group">
+                        <label>फसल चुनें</label>
+                        <input type="text" id="mandi-commodity" placeholder="Crop (e.g., Potato)">
+                    </div>
+                    <div class="form-group" style="align-self: flex-end;">
+                        <button class="btn" style="height: 50px;" onclick="fetchMandiBhav()">
+                            🚀 भाव देखें
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mandi-result" style="margin-top: 25px; display: none;">
+                    <h3 style="color: #1b5e20; margin-bottom: 15px; font-weight: 700;">निचले स्तर पर मिले परिणाम:</h3>
+                    <div id="mandi-data-list">
+                        </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🌤️ मौसम (Live Weather)</h2>
+                <div class="form-group">
+                    <label>शहर / जिला डालें</label>
+                    <input type="text" id="weather-city" placeholder="City/District Name">
+                </div>
+                <button class="btn btn-blue" onclick="fetchWeather()">
+                    ☁️ मौसम चेक करें
+                </button>
+                <div id="weather-result" class="result-box" style="background-color: #e3f2fd; border-color: #90caf9; min-height: 80px;">
+                    </div>
+            </div>
+
+            <div class="card">
+                <h2>🤝 लेबर हब (Kisan Dosti Hub)</h2>
+                <div class="form-group">
+                    <label>आपकी भूमिका</label>
+                    <select id="role-select">
+                        <option value="">Aap Kaun Hain?</option>
+                        <option value="Kisan">Main Kisan hu (Labour Chahiye)</option>
+                        <option value="Labour">Main Labour hu (Kaam Chahiye)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>मोबाइल नंबर</label>
+                    <input type="tel" id="user-phone" placeholder="10 Digits Mobile Number">
+                </div>
+                <button class="btn btn-orange" onclick="saveToFirebase()">
+                    💾 डेटा सेव करें
+                </button>
+                <div id="db-result" class="result-box" style="text-align: center;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. APNA FIREBASE CONFIG YAHAN PASTE KAREIN ---
+        const firebaseConfig = {
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+            projectId: "YOUR_FIREBASE_PROJECT_ID",
+            storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+            appId: "YOUR_FIREBASE_APP_ID"
+        };
+
+        // Firebase Initialize
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Google Login / Logout
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(err => alert("Login failed: " + err.message));
+        }
+        function logout() { auth.signOut(); }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById("login-card").style.display = "none";
+                document.getElementById("profile-card").style.display = "block";
+                document.getElementById("user-name-display").innerText = user.displayName;
+            } else {
+                document.getElementById("login-card").style.display = "grid";
+                document.getElementById("profile-card").style.display = "none";
+            }
+        });
+
+        // --- 2. MODERN MANDI BHAV API INTEGRATION ---
+        function fetchMandiBhav() {
+            const state = document.getElementById("mandi-state").value.trim();
+            const commodity = document.getElementById("mandi-commodity").value.trim();
+            const dataList = document.getElementById("mandi-data-list");
+            const resultDiv = document.getElementById("mandi-result");
+
+            if(!state || !commodity) { alert("दोनों फ़ील्ड भरें!"); return; }
+
+            dataList.innerHTML = "<div class='profile-status'>सर्वर से डेटा लोड हो रहा है...</div>";
+            resultDiv.style.display = "block";
+
+            // Your REAL API Key from Amit
+            const apiKey = "579b464db66ec23bdd000001c7d8fa862e0a4a7b460c08d33c3ffbcf";
+            const resourceId = "9ef84268-d588-465a-a308-a864a43d0070";
+            
+            // Govt Data API URL with Filters (Real Key Connected)
+            const url = `https://api.data.gov.in/resource/${resourceId}?api-key=${apiKey}&format=json&filters[state]=${encodeURIComponent(state)}&filters[commodity]=${encodeURIComponent(commodity)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    dataList.innerHTML = "";
+                    if (data.records && data.records.length > 0) {
+                        data.records.forEach(record => {
+                            const recordDiv = `
+                                <div class="mandi-record">
+                                    <div class="mandi-record-info">
+                                        <span class="mandi-name">${record.market || record.district || 'N/A'} मंडी</span>
+                                        <span class="mandi-crop">${record.commodity || 'N/A'} (ताज़ा भाव)</span>
+                                    </div>
+                                    <div class="mandi-price">
+                                        ₹${record.max_price || record.modal_price || 'N/A'}
+                                        <span class="mandi-price-label">प्रति क्विंटल</span>
+                                    </div>
+                                </div>`;
+                            dataList.innerHTML += recordDiv;
+                        });
+                    } else {
+                        dataList.innerHTML = "<div class='profile-status' style='color:#777; background:#fafafa;'>कोई डेटा नहीं मिला। Spelling check करें (English)।</div>";
+                    }
+                })
+                .catch(error => {
+                    console.error("API Error:", error);
+                    dataList.innerHTML = "<div class='profile-status' style='color:#b71c1c; background:#ffebee;'>Server Error! CORS extension चालू करें या थोड़ा इंतज़ार करें।</div>";
+                });
+        }
+
+        // --- 3. MODERN WEATHER INTEGRATION ---
+        function fetchWeather() {
+            const city = document.getElementById("weather-city").value.trim();
+            const resBox = document.getElementById("weather-result");
+
+            if(!city) { alert("शहर का नाम भरें!"); return; }
+
+            resBox.style.display = "block";
+            resBox.innerHTML = "<div class='profile-status'>डेटा लोड हो रहा है...</div>";
+
+            fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`)
+                .then(res => res.json())
+                .then(data => {
+                    const current = data.current_condition[0];
+                    const temp = current.temp_C;
+                    const desc = current.weatherDesc[0].value;
+                    const humidity = current.humidity;
+
+                    resBox.innerHTML = `
+                        <div style="text-align: center;">
+                            <span style="font-weight: 800; font-size: 22px; color: #1976d2;">📍 ${city.toUpperCase()}</span><br>
+                            <span style="font-size: 30px; font-weight: 900; margin: 10px 0; display: block;">🌡️ ${temp}°C</span>
+                            <span style="font-size: 16px; color: #666; display: block;">☁️ <b>Mausam:</b> ${desc} • 💧 <b>Nami:</b> ${humidity}%</span>
+                        </div>
+                    `;
+                })
+                .catch(() => {
+                    resBox.innerHTML = "<div class='profile-status' style='color:#b71c1c;'>डेटा लोड नहीं हुआ।</div>";
+                });
+        }
+
+        // --- 4. MODERN FIRESTORE SAVE ---
+        function saveToFirebase() {
+            const user = auth.currentUser;
+            if (!user) { alert("पहले ऊपर Google से लॉगिन करें!"); return; }
+
+            const role = document.getElementById("role-select").value;
+            const phone = document.getElementById("user-phone").value;
+            const resBox = document.getElementById("db-result");
+
+            if (!role || !phone) { alert("पूरी जानकारी भरें!"); return; }
+            if (phone.length < 10) { alert("मोबाइल नंबर 10 अंकों का डालें!"); return; }
+
+            db.collection("users").add({
+                name: user.displayName,
+                email: user.email,
+                role: role,
+                phone: phone,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                resBox.style.display = "block";
+                resBox.innerHTML = "<strong style='color:#1b5e20; font-size:18px;'>🎉 Success!</strong> डेटा सुरक्षित डेटाबेस में सेव हो गया है।";
+            })
+            .catch(err => alert("Database Error: " + err.message));
+        }
+    </script>
+</body>
+</html>

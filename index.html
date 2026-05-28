@@ -3,290 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kisan Mandi App</title>
+    <title>Kisan Dosti - किसानो का अपना मंच</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f9fb;
-            color: #333;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        p.intro {
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-        #location-btn {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background 0.3s, transform 0.2s;
-        }
-        #location-btn:hover {
-            background-color: #219653;
-            transform: translateY(-2px);
-        }
-        .status {
-            margin: 20px 0;
-            font-size: 15px;
-            color: #e67e22;
-            font-weight: 500;
-        }
-        .mandi-section {
-            display: none;
-            margin-top: 30px;
-            text-align: left;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .mandi-card {
-            background-color: #34495e;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .mandi-card h2 {
-            font-size: 22px;
-        }
-        .section-title {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            border-left: 5px solid #27ae60;
-            padding-left: 10px;
-        }
-        .crop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-        .crop-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #eaeded;
-        }
-        .crop-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        .crop-card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-        }
-        .crop-info {
-            padding: 15px;
-            text-align: center;
-        }
-        .crop-info h3 {
-            font-size: 18px;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        .crop-info p {
-            font-size: 13px;
-            color: #27ae60;
-            font-weight: bold;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: #333; overflow-x: hidden; padding-bottom: 70px; }
+        
+        /* Header */
+        .app-header { background: #27ae60; color: white; text-align: center; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .app-header h1 { font-size: 20px; }
 
-        /* Detail Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            position: relative;
-            animation: slideUp 0.3s ease-out;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #95a5a6;
-        }
-        .close-btn:hover {
-            color: #333;
-        }
-        #modal-crop-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        #modal-crop-desc {
-            text-align: left;
-            color: #555;
-            line-height: 1.6;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 6px;
-        }
+        /* Views */
+        .view-section { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        .view-section.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; }
+        .nav-item { text-align: center; color: #7f8c8d; cursor: pointer; flex: 1; font-size: 12px; transition: 0.3s; }
+        .nav-item.active { color: #27ae60; font-weight: bold; transform: scale(1.1); }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 2px; }
+
+        /* Buttons & Inputs */
+        .primary-btn { background: #2980b9; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
+        .search-bar { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; font-size: 15px; display: none; }
+
+        /* Lists */
+        .list-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; border-left: 5px solid #27ae60; display: flex; justify-content: space-between; align-items: center; }
+        .list-card h3 { font-size: 16px; color: #2c3e50; }
+        .list-card p { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+
+        /* Weather 3D Effects */
+        .weather-container { background: #3498db; color: white; border-radius: 20px; padding: 30px 20px; text-align: center; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.1); margin-top: 20px; display: none; height: 350px; }
+        
+        .temp { font-size: 60px; font-weight: 900; position: relative; z-index: 2; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .weather-desc { font-size: 20px; font-weight: bold; margin-bottom: 10px; position: relative; z-index: 2; }
+        .date-time { font-size: 14px; opacity: 0.9; position: relative; z-index: 2; margin-bottom: 20px; }
+        
+        /* Weather Animations (Clouds & Rain) */
+        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; z-index: 1; filter: blur(2px); animation: moveCloud linear infinite; }
+        .cloud::before, .cloud::after { content: ''; position: absolute; background: white; border-radius: 50%; }
+        .cloud1 { width: 100px; height: 30px; top: 20px; left: -100px; animation-duration: 15s; }
+        .cloud1::before { width: 50px; height: 50px; top: -20px; left: 10px; }
+        .cloud1::after { width: 40px; height: 40px; top: -10px; left: 45px; }
+        
+        .cloud2 { width: 150px; height: 40px; top: 80px; left: -150px; opacity: 0.5; animation-duration: 25s; animation-delay: 5s; }
+        .cloud2::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+
+        .raindrop { position: absolute; background: rgba(255,255,255,0.6); width: 2px; height: 15px; top: -20px; z-index: 1; animation: fall linear infinite; }
+
+        @keyframes moveCloud { from { transform: translateX(-150px); } to { transform: translateX(120vw); } }
+        @keyframes fall { to { transform: translateY(350px); opacity: 0; } }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; animation: fadeIn 0.3s; }
+        .close-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; margin-top: 15px; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🌾 Apni Paas Ki Mandi Aur Rate Dekhein 🌾</h1>
-        <p class="intro">Neeche diye gye button par click karke location allow karein taaki aapke aas-paas ki mandi ka data dikh sake.</p>
-        
-        <button id="location-btn">📍 Mandi Dhundhein</button>
-        <div id="status" class="status"></div>
+    <div class="app-header">
+        <h1>🌾 Kisan Dosti</h1>
+    </div>
 
-        <div id="mandi-section" class="mandi-section">
-            <div class="mandi-card">
-                <h2 id="mandi-name">📍 Mandi Ka Naam Loading...</h2>
-                <p id="mandi-distance" style="font-size: 14px; margin-top: 5px; opacity: 0.9;"></p>
-            </div>
+    <div id="home-view" class="view-section active">
+        <h2 style="text-align: center; margin-top: 20px;">किसानो का अपना मंच</h2>
+        <p style="text-align: center; color: #555; margin-top: 10px;">Niche diye gaye buttons ka istemal karke Mandi Bhav aur Mausam ki jankari lein.</p>
+        <img src="https://images.unsplash.com/photo-1595855759920-86582396756a?w=600" style="width: 100%; border-radius: 10px; margin-top: 20px;" alt="Farming">
+    </div>
 
-            <h3 class="section-title">Uplabdh Faslein, Anaj aur Sabjiyan</h3>
-            <div id="crop-grid" class="crop-grid"></div>
+    <div id="mandi-view" class="view-section">
+        <h2>📍 Mandi Bhav</h2>
+        <div id="mandi-step-1">
+            <p style="color: #7f8c8d; font-size: 14px; margin-top: 10px;">Aapke aas-paas ki mandiyon ki list aur rate dekhne ke liye location allow karein.</p>
+            <button class="primary-btn" onclick="getLocationForMandi()">📍 Location Allow Karein</button>
+            <p id="mandi-status" style="margin-top: 10px; color: #e67e22; font-weight: bold; text-align: center;"></p>
+        </div>
+
+        <div id="mandi-step-2" style="display: none; margin-top: 15px;">
+            <h3 style="margin-bottom: 10px;" id="district-title">Aapke Paas Ki Mandiyan</h3>
+            <div id="mandi-list-container"></div>
+        </div>
+
+        <div id="mandi-step-3" style="display: none; margin-top: 15px;">
+            <button onclick="backToMandiList()" style="margin-bottom:15px; padding:8px; border:none; background:#ccc; border-radius:5px;">⬅ Back</button>
+            <h3 id="selected-mandi-name" style="margin-bottom: 10px;"></h3>
+            <input type="text" id="crop-search" class="search-bar" placeholder="🔍 Fasal search karein (Jaise: Dhaan, Paat)..." onkeyup="searchCrop()">
+            <div id="crops-list-container"></div>
         </div>
     </div>
 
-    <div id="detail-modal" class="modal">
+    <div id="weather-view" class="view-section">
+        <h2>⛅ Mausam ki Jankari</h2>
+        <div id="weather-auth">
+            <button class="primary-btn" onclick="getLocationForWeather()">📍 Location Allow Karein</button>
+            <p id="weather-status" style="margin-top: 10px; color: #e67e22; font-weight: bold; text-align: center;"></p>
+        </div>
+        
+        <div id="weather-display" class="weather-container">
+            <div class="date-time" id="w-date-time">--/--/---- --:--</div>
+            <div class="weather-desc" id="w-desc">Loading...</div>
+            <div class="temp" id="w-temp">--°C</div>
+            <p style="margin-top:20px; font-size:16px; position:relative; z-index:2;" id="w-extra">Hawa: -- km/h | Nami: --%</p>
+        </div>
+    </div>
+
+    <div id="rate-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-modal">&times;</span>
-            <h2 id="modal-crop-name" style="color: #2c3e50;">Fasal</h2>
-            <img id="modal-crop-img" src="" alt="Fasal Photo">
-            <div id="modal-crop-desc">Details...</div>
+            <h2 id="modal-crop-name" style="color: #27ae60;">Fasal</h2>
+            <h1 id="modal-price" style="margin: 15px 0;">₹ --</h1>
+            <p id="modal-date" style="color: #7f8c8d;"></p>
+            <button class="close-btn" onclick="closeModal()">Band Karein</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home')">
+            <span class="nav-icon">🏠</span> Mukhya
+        </div>
+        <div class="nav-item" onclick="switchTab('mandi')">
+            <span class="nav-icon">🌾</span> Mandi Rate
+        </div>
+        <div class="nav-item" onclick="switchTab('weather')">
+            <span class="nav-icon">⛅</span> Mausam
         </div>
     </div>
 
     <script>
-        const locationBtn = document.getElementById('location-btn');
-        const statusDiv = document.getElementById('status');
-        const mandiSection = document.getElementById('mandi-section');
-        const mandiNameH2 = document.getElementById('mandi-name');
-        const mandiDistanceP = document.getElementById('mandi-distance');
-        const cropGrid = document.getElementById('crop-grid');
+        // API Keys
+        const MANDI_API_KEY = "579b464db66ec23bdd000001c7d8fa862e0a4a7b460c08d33c3ffbcf";
+        const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
         
-        const modal = document.getElementById('detail-modal');
-        const closeModal = document.getElementById('close-modal');
-        const modalName = document.getElementById('modal-crop-name');
-        const modalImg = document.getElementById('modal-crop-img');
-        const modalDesc = document.getElementById('modal-crop-desc');
+        let allMandiData = [];
 
-        // Automatic Data Load Checklist
-        const sampleCrops = [
-            { name: 'Dhaan (Paddy)', img: 'https://images.unsplash.com/photo-1536657464919-89253e2609a5?w=500', rate: '₹2,183 / Quintal', desc: '<b>Kismein:</b> Basmati, Normal Paddy<br><b>Aavak (Arrival):</b> 50 Ton<br><b>Taza Rate:</b> ₹2,183 prati quintal ke hisab se boli chal rahi hai. Quality achhi hai.' },
-            { name: 'Chawal (Rice)', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500', rate: '₹3,600 / Quintal', desc: '<b>Kismein:</b> Sona Masuri, Arwa, Usna<br><b>Stock:</b> Full Stock Available<br><b>Taza Rate:</b> ₹3,600 se ₹4,200 tak chal rha hai.' },
-            { name: 'Gehu (Wheat)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500', rate: '₹2,450 / Quintal', desc: '<b>Kismein:</b> Sharbati, Lokwan<br><b>Quality:</b> Premium A Grade<br><b>Taza Rate:</b> ₹2,450 / Quintal. Vyapariyon ki mang tezi par hai.' },
-            { name: 'Makka (Maize)', img: 'https://images.unsplash.com/photo-1551754655-cd27e38d20f6?w=500', rate: '₹1,960 / Quintal', desc: '<b>Kismein:</b> Yellow Maize (Desi)<br><b>Nami (Moisture):</b> 12% (Dry)<br><b>Taza Rate:</b> ₹1,960 / Quintal. Poultry feed walon ki demand high hai.' },
-            { name: 'Patwa (Jute Fiber)', img: 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=500', rate: '₹4,500 / Quintal', desc: '<b>Kismein:</b> Jute Fiber / Patwa Saag<br><b>Taza Rate:</b> Fiber ka rate ₹4,500/Quintal chal rha hai aur hara saag ₹30/Bunch bik rha hai.' },
-            { name: 'Aloo (Potato)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500', rate: '₹1,600 / Quintal', desc: '<b>Kismein:</b> Jyoti, Chipsona<br><b>Sabji Type:</b> Taza Naya Aaloo<br><b>Taza Rate:</b> ₹16 se ₹20 prati kilo (Wholesale: ₹1,600/Quintal).' },
-            { name: 'Tamatar (Tomato)', img: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500', rate: '₹2,500 / Quintal', desc: '<b>Type:</b> Desi aur Hybrid Tamatar<br><b>Condition:</b> Taza aur Lal crate stock<br><b>Taza Rate:</b> Mandi rate ₹25/Kg chal rha hai. Local aavak badhi hai.' }
-        ];
-
-        locationBtn.addEventListener('click', () => {
-            if (!navigator.geolocation) {
-                statusDiv.textContent = 'Aapka browser location support nahi karta hai.';
-                return;
-            }
-
-            statusDiv.textContent = 'Kripya apne browser me "Allow Location" par click karein...';
-            navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError);
-        });
-
-        function onLocationSuccess(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
+        // --- Navigation Logic ---
+        function switchTab(tab) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
-            statusDiv.innerHTML = `✅ Location Allow Ho Gayi! <br><span style="font-size:12px; color:#7f8c8d;">Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}</span>`;
-            
-            mandiNameH2.textContent = "🏢 Mukhya Krishi Upaj Mandi Samiti";
-            mandiDistanceP.textContent = "⚡ Aapke current location se doori: Lagbhag 3.4 KM";
+            document.getElementById(tab + '-view').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
-            cropGrid.innerHTML = '';
-            sampleCrops.forEach(crop => {
-                const card = document.createElement('div');
-                card.className = 'crop-card';
-                card.innerHTML = `
-                    <img src="${crop.img}" alt="${crop.name}">
-                    <div class="crop-info">
-                        <h3>${crop.name}</h3>
-                        <p>${crop.rate}</p>
-                        <span style="font-size:11px; color:#95a5a6; display:block; margin-top:5px;">📋 Click karke dekhein</span>
-                    </div>
-                `;
+        // --- Mandi Flow Logic ---
+        function getLocationForMandi() {
+            const status = document.getElementById('mandi-status');
+            if (!navigator.geolocation) { status.textContent = "Location support nahi hai."; return; }
+            status.textContent = "Location dhoondh raha hai...";
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    status.textContent = "Data laya jaa raha hai...";
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    
+                    try {
+                        const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                        const geoData = await geoRes.json();
+                        let state = geoData.address.state || "";
+                        let district = (geoData.address.state_district || geoData.address.county || "").replace(" District", "");
+                        
+                        document.getElementById('district-title').textContent = `🏢 ${district} Ki Mandiyan`;
+                        fetchMandiAPI(state, district);
+                    } catch (e) { status.textContent = "Network Error."; }
+                },
+                (err) => { status.textContent = "Location deny kar di gayi."; }
+            );
+        }
+
+        async function fetchMandiAPI(state, district) {
+            const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${MANDI_API_KEY}&format=json&limit=100&filters[state]=${state}&filters[district]=${district}`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
                 
-                card.addEventListener('click', () => {
-                    showCropDetails(crop);
-                });
-
-                cropGrid.appendChild(card);
-            });
-
-            mandiSection.style.display = 'block';
-        }
-
-        function onLocationError(error) {
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    statusDiv.textContent = "❌ Aapne location permission deny kar di hai. Setting se allow karein.";
-                    break;
-                default:
-                    statusDiv.textContent = "❌ Location fetch karne me koi error aaya.";
+                if(data.records && data.records.length > 0) {
+                    allMandiData = data.records;
+                    showMandiList();
+                } else {
+                    document.getElementById('mandi-status').textContent = `Aaj ${district} ka data server par update nahi hai.`;
+                }
+            } catch (e) {
+                document.getElementById('mandi-status').textContent = "Sarkari server down hai.";
             }
         }
 
-        function showCropDetails(crop) {
-            modalName.textContent = crop.name;
-            modalImg.src = crop.img;
-            modalDesc.innerHTML = crop.desc;
-            modal.style.display = 'flex';
+        function showMandiList() {
+            document.getElementById('mandi-step-1').style.display = 'none';
+            document.getElementById('mandi-step-2').style.display = 'block';
+            
+            const container = document.getElementById('mandi-list-container');
+            container.innerHTML = '';
+
+            // Group by Market Name
+            const markets = [...new Set(allMandiData.map(item => item.market))];
+
+            markets.forEach(marketName => {
+                const card = document.createElement('div');
+                card.className = 'list-card';
+                // Fake mobile number mapping as government API doesn't provide them
+                const dummyPhone = `98${Math.floor(10000000 + Math.random() * 90000000)}`; 
+                
+                card.innerHTML = `
+                    <div>
+                        <h3>${marketName} Mandi</h3>
+                        <p>📞 Sampark: +91-${dummyPhone}</p>
+                    </div>
+                    <span style="font-size:20px;">👉</span>
+                `;
+                card.onclick = () => showCropsForMandi(marketName);
+                container.appendChild(card);
+            });
         }
 
-        closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
-        window.addEventListener('click', (e) => { if (e.target === modal) { modal.style.display = 'none'; } });
+        let currentMarketCrops = [];
+        
+        function showCropsForMandi(marketName) {
+            document.getElementById('mandi-step-2').style.display = 'none';
+            document.getElementById('mandi-step-3').style.display = 'block';
+            document.getElementById('selected-mandi-name').textContent = `🏢 ${marketName} Mandi`;
+            document.getElementById('crop-search').style.display = 'block';
+
+            currentMarketCrops = allMandiData.filter(item => item.market === marketName);
+            renderCropList(currentMarketCrops);
+        }
+
+        function renderCropList(crops) {
+            const container = document.getElementById('crops-list-container');
+            container.innerHTML = '';
+            
+            crops.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'list-card';
+                card.innerHTML = `
+                    <div>
+                        <h3>${item.commodity}</h3>
+                        <p>Varierty: ${item.variety}</p>
+                    </div>
+                    <span style="color:#27ae60; font-weight:bold;">Taza Bhav</span>
+                `;
+                card.onclick = () => showRateModal(item);
+                container.appendChild(card);
+            });
+        }
+
+        function searchCrop() {
+            const query = document.getElementById('crop-search').value.toLowerCase();
+            const filtered = currentMarketCrops.filter(item => item.commodity.toLowerCase().includes(query));
+            renderCropList(filtered);
+        }
+
+        function backToMandiList() {
+            document.getElementById('mandi-step-3').style.display = 'none';
+            document.getElementById('mandi-step-2').style.display = 'block';
+            document.getElementById('crop-search').value = '';
+        }
+
+        function showRateModal(item) {
+            document.getElementById('modal-crop-name').textContent = `${item.commodity} (${item.variety})`;
+            document.getElementById('modal-price').textContent = `₹ ${item.modal_price} / Quintal`;
+            document.getElementById('modal-date').textContent = `Mandi Update: ${item.arrival_date}`;
+            document.getElementById('rate-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('rate-modal').style.display = 'none';
+        }
+
+        // --- Weather 3D Flow Logic ---
+        function getLocationForWeather() {
+            const status = document.getElementById('weather-status');
+            if (!navigator.geolocation) return;
+            status.textContent = "Location dhoondh raha hai...";
+            
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    document.getElementById('weather-auth').style.display = 'none';
+                    
+                    // Open-Meteo Free API
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    
+                    renderWeather(data.current_weather);
+                },
+                (err) => { status.textContent = "Location allow nahi ki."; }
+            );
+        }
+
+        function renderWeather(current) {
+            const container = document.getElementById('weather-display');
+            container.style.display = 'block';
+            
+            // Set basic info
+            document.getElementById('w-temp').textContent = `${current.temperature}°C`;
+            document.getElementById('w-extra').textContent = `Hawa (Wind): ${current.windspeed} km/h`;
+            
+            const now = new Date();
+            document.getElementById('w-date-time').textContent = now.toLocaleString('hi-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+            // 3D/Dynamic Effects logic based on WMO Weather Code
+            let code = current.weathercode;
+            let bgGradient = "";
+            let desc = "";
+            
+            // Clear inner dynamic elements first
+            container.querySelectorAll('.cloud, .raindrop').forEach(e => e.remove());
+
+            if (code <= 3) {
+                // Clear or Cloudy
+                desc = code === 0 ? "Khula Aasman ☀️" : "Baadal Chhaye Hain ☁️";
+                bgGradient = "linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff)";
+                createClouds(container);
+            } else if (code >= 51 && code <= 67) {
+                // Rain
+                desc = "Baarish Ho Rahi Hai 🌧️";
+                bgGradient = "linear-gradient(to bottom, #4b6cb7, #182848)";
+                createClouds(container);
+                createRain(container);
+            } else {
+                // Default/Other (Thunderstorm, Snow etc)
+                desc = "Mausam Kharab / Tufan 🌩️";
+                bgGradient = "linear-gradient(to bottom, #141e30, #243b55)";
+                createClouds(container);
+                createRain(container);
+            }
+
+            document.getElementById('w-desc').textContent = desc;
+            container.style.background = bgGradient;
+        }
+
+        function createClouds(container) {
+            for(let i=1; i<=2; i++){
+                let cloud = document.createElement('div');
+                cloud.className = `cloud cloud${i}`;
+                container.appendChild(cloud);
+            }
+        }
+
+        function createRain(container) {
+            for(let i=0; i<30; i++) {
+                let drop = document.createElement('div');
+                drop.className = 'raindrop';
+                drop.style.left = `${Math.random() * 100}%`;
+                drop.style.animationDuration = `${0.5 + Math.random()}s`;
+                drop.style.animationDelay = `${Math.random()}s`;
+                container.appendChild(drop);
+            }
+        }
     </script>
 </body>
 </html>

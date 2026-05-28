@@ -181,7 +181,6 @@
         <button id="location-btn">📍 Mandi Dhundhein</button>
         <div id="status" class="status"></div>
 
-        <!-- Mandi Data Section -->
         <div id="mandi-section" class="mandi-section">
             <div class="mandi-card">
                 <h2 id="mandi-name">📍 Mandi Ka Naam Loading...</h2>
@@ -193,7 +192,6 @@
         </div>
     </div>
 
-    <!-- Detail Pop-up Modal -->
     <div id="detail-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="close-modal">&times;</span>
@@ -217,13 +215,13 @@
         const modalImg = document.getElementById('modal-crop-img');
         const modalDesc = document.getElementById('modal-crop-desc');
 
-        // Sample Data for automatic display
+        // Automatic Data Load Checklist
         const sampleCrops = [
-            { name: 'Dhaan (Paddy)', img: 'https://images.unsplash.com/photo-1536657464919-89253e2609a5?w=500', rate: '₹2,183 / Quintal', desc: '<b>Kismein:</b> Basmati, Normal Paddy<br><b>Aavak (Arrival):</b> 50 Ton<br><b>Taza Rate:</b> ₹2,183 prati quintal. Fasal ki quality achhi hai.' },
+            { name: 'Dhaan (Paddy)', img: 'https://images.unsplash.com/photo-1536657464919-89253e2609a5?w=500', rate: '₹2,183 / Quintal', desc: '<b>Kismein:</b> Basmati, Normal Paddy<br><b>Aavak (Arrival):</b> 50 Ton<br><b>Taza Rate:</b> ₹2,183 prati quintal ke hisab se boli chal rahi hai. Quality achhi hai.' },
             { name: 'Chawal (Rice)', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500', rate: '₹3,600 / Quintal', desc: '<b>Kismein:</b> Sona Masuri, Arwa, Usna<br><b>Stock:</b> Full Stock Available<br><b>Taza Rate:</b> ₹3,600 se ₹4,200 tak chal rha hai.' },
-            { name: 'Gehu (Wheat)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500', rate: '₹2,450 / Quintal', desc: '<b>Kismein:</b> Sharbati, Lokwan<br><b>Quality:</b> Premium A Grade<br><b>Taza Rate:</b> ₹2,450 / Quintal.' },
-            { name: 'Makka (Maize)', img: 'https://images.unsplash.com/photo-1551754655-cd27e38d20f6?w=500', rate: '₹1,960 / Quintal', desc: '<b>Kismein:</b> Yellow Maize (Desi)<br><b>Nami (Moisture):</b> 12% (Dry)<br><b>Taza Rate:</b> ₹1,960 / Quintal.' },
-            { name: 'Patwa (Jute/Leaves)', img: 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=500', rate: '₹4,500 / Quintal', desc: '<b>Kismein:</b> Jute Fiber / Patwa Saag<br><b>Taza Rate:</b> Fiber ka rate ₹4,500/Quintal chal rha hai aur hara saag ₹30/Bunch bik rha hai.' },
+            { name: 'Gehu (Wheat)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500', rate: '₹2,450 / Quintal', desc: '<b>Kismein:</b> Sharbati, Lokwan<br><b>Quality:</b> Premium A Grade<br><b>Taza Rate:</b> ₹2,450 / Quintal. Vyapariyon ki mang tezi par hai.' },
+            { name: 'Makka (Maize)', img: 'https://images.unsplash.com/photo-1551754655-cd27e38d20f6?w=500', rate: '₹1,960 / Quintal', desc: '<b>Kismein:</b> Yellow Maize (Desi)<br><b>Nami (Moisture):</b> 12% (Dry)<br><b>Taza Rate:</b> ₹1,960 / Quintal. Poultry feed walon ki demand high hai.' },
+            { name: 'Patwa (Jute Fiber)', img: 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=500', rate: '₹4,500 / Quintal', desc: '<b>Kismein:</b> Jute Fiber / Patwa Saag<br><b>Taza Rate:</b> Fiber ka rate ₹4,500/Quintal chal rha hai aur hara saag ₹30/Bunch bik rha hai.' },
             { name: 'Aloo (Potato)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500', rate: '₹1,600 / Quintal', desc: '<b>Kismein:</b> Jyoti, Chipsona<br><b>Sabji Type:</b> Taza Naya Aaloo<br><b>Taza Rate:</b> ₹16 se ₹20 prati kilo (Wholesale: ₹1,600/Quintal).' },
             { name: 'Tamatar (Tomato)', img: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500', rate: '₹2,500 / Quintal', desc: '<b>Type:</b> Desi aur Hybrid Tamatar<br><b>Condition:</b> Taza aur Lal crate stock<br><b>Taza Rate:</b> Mandi rate ₹25/Kg chal rha hai. Local aavak badhi hai.' }
         ];
@@ -235,7 +233,6 @@
             }
 
             statusDiv.textContent = 'Kripya apne browser me "Allow Location" par click karein...';
-            
             navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError);
         });
 
@@ -243,9 +240,9 @@
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             
-            statusDiv.innerHTML = `✅ Location Allow Ho Gayi! <br><span style="font-size:12px; color:#7f8c8d;">Latitude: ${lat.toFixed(4)}, Longitude: ${lon.toFixed(4)}</span>`;
+            statusDiv.innerHTML = `✅ Location Allow Ho Gayi! <br><span style="font-size:12px; color:#7f8c8d;">Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}</span>`;
             
-            mandiNameH2.textContent = "🏢 Kshetriya Krishi Upaj Mandi (Mukhya Kendra)";
+            mandiNameH2.textContent = "🏢 Mukhya Krishi Upaj Mandi Samiti";
             mandiDistanceP.textContent = "⚡ Aapke current location se doori: Lagbhag 3.4 KM";
 
             cropGrid.innerHTML = '';
@@ -257,7 +254,7 @@
                     <div class="crop-info">
                         <h3>${crop.name}</h3>
                         <p>${crop.rate}</p>
-                        <span style="font-size:11px; color:#95a5a6;">Click karke poori jankari dekhein</span>
+                        <span style="font-size:11px; color:#95a5a6; display:block; margin-top:5px;">📋 Click karke dekhein</span>
                     </div>
                 `;
                 
@@ -274,16 +271,10 @@
         function onLocationError(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
-                    statusDiv.textContent = "❌ Aapne location permission deny kar di hai. Kripya setting se allow karein.";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    statusDiv.textContent = "❌ Location jankari uplabdh nahi hai.";
-                    break;
-                case error.TIMEOUT:
-                    statusDiv.textContent = "❌ Location request timeout ho gayi.";
+                    statusDiv.textContent = "❌ Aapne location permission deny kar di hai. Setting se allow karein.";
                     break;
                 default:
-                    statusDiv.textContent = "❌ Koi anjan error aaya.";
+                    statusDiv.textContent = "❌ Location fetch karne me koi error aaya.";
             }
         }
 
@@ -294,15 +285,8 @@
             modal.style.display = 'flex';
         }
 
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
+        closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === modal) { modal.style.display = 'none'; } });
     </script>
 </body>
 </html>
